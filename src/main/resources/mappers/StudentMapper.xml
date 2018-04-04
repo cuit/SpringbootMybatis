@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.SpringBootMybatis.mapper.StudentMapper">
+    <resultMap id="ResultMap" type="com.example.SpringBootMybatis.model.Student">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+    </resultMap>
+    
+    <sql id="ColumLists">
+        id, name, age
+    </sql>
+    
+    <insert id="insert" parameterType="com.example.SpringBootMybatis.model.Student" useGeneratedKeys="true" keyProperty="id">
+        insert into student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id, jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                #{age, jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findById" parameterType="java.lang.Integer" resultMap="ResultMap">
+        SELECT
+        <include refid="ColumLists"/>
+        FROM student
+        WHERE id = #{id, jdbcType = INTEGER}
+    </select>
+
+    <select id="findAll" resultType="com.example.SpringBootMybatis.model.Student" resultMap="ResultMap">
+        SELECT
+        <include refid="ColumLists"/>
+        FROM student
+    </select>
+
+    <update id="update" parameterType="com.example.SpringBootMybatis.model.Student" >
+        UPDATE student
+        <set>
+            <if test="name != null">
+                name = #{name, jdbcType = VARCHAR},
+            </if>
+            <if test="age != null">
+                age = #{age, jdbcType = INTEGER},
+            </if>
+        </set>
+        WHERE id = #{id, jdbcType = INTEGER}
+    </update>
+</mapper>
